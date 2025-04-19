@@ -10,25 +10,31 @@ wxBEGIN_EVENT_TABLE(GLCanvas, wxGLCanvas)
 wxEND_EVENT_TABLE()
 
 GLCanvas::GLCanvas(wxWindow* parent, const wxGLAttributes& dispAttrs)
-    : wxGLCanvas(parent, dispAttrs), m_rotationAngle(0.0f), m_showFeature(true) {
+    : wxGLCanvas(parent, dispAttrs), 
+    m_rotationAngle(0.0f), 
+    m_showFeature(true) 
+{
     m_context = new wxGLContext(this);
     SetCurrent(*m_context);
     ::wxInitAllImageHandlers();
-    m_buttonTexture = LoadTexture("C:\\Users\\Makarand.Patwardhan\\source\\repos\\wx_opengl_app\\build\\Debug\\button.png");
+    m_buttonTexture = LoadTexture("button.png");
 }
 
-GLCanvas::~GLCanvas() {
+GLCanvas::~GLCanvas() 
+{
     delete m_context;
     glDeleteTextures(1, &m_buttonTexture);
 }
 
-GLuint GLCanvas::LoadTexture(const wxString& path) {
+GLuint GLCanvas::LoadTexture(const wxString& path) 
+{
     wxImage image(path);
-    std::cout << "Loading the image..........." <<std::endl;
 
-    if(!image.IsOk()) return 0;
+    if(!image.IsOk()) 
+    {
+        return 0;
+    }
 
-    std::cout << "The image is correct" <<std::endl;
     GLuint textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -43,15 +49,18 @@ GLuint GLCanvas::LoadTexture(const wxString& path) {
     int height = image.GetHeight();
 
     std::vector<unsigned char> glData(width * height * bytesPerPixel);
-    for(int y=0; y<height; y++) {
-        for(int x=0; x<width; x++) {
+    for(int y=0; y<height; y++) 
+    {
+        for(int x=0; x<width; x++) 
+        {
             int srcIdx = (y * width + x) * 3;
             int dstIdx = ((height-1-y) * width + x) * bytesPerPixel;
             
             glData[dstIdx+0] = data[srcIdx+0];
             glData[dstIdx+1] = data[srcIdx+1];
             glData[dstIdx+2] = data[srcIdx+2];
-            if(bytesPerPixel == 4) {
+            if(bytesPerPixel == 4) 
+            {
                 glData[dstIdx+3] = alpha ? alpha[y*width+x] : 255;
             }
         }
@@ -63,17 +72,20 @@ GLuint GLCanvas::LoadTexture(const wxString& path) {
     return textureID;
 }
 
-void GLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event)) {
+void GLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event)) 
+{
     wxPaintDC(this);
     Render();
 }
 
-void GLCanvas::OnSize(wxSizeEvent& event) {
+void GLCanvas::OnSize(wxSizeEvent& event) 
+{
     Refresh();
     event.Skip();
 }
 
-void GLCanvas::Render() {
+void GLCanvas::Render() 
+{
     SetCurrent(*m_context);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -103,7 +115,8 @@ void GLCanvas::Render() {
         // Green circle
         glColor3f(0.0f, 1.0f, 0.0f);
         glBegin(GL_LINE_LOOP);
-        for(int i = 0; i < 360; i++) {
+        for(int i = 0; i < 360; i++) 
+        {
             float degInRad = i * M_PI / 180.0f;
             glVertex2f(cos(degInRad)*50 + 300, sin(degInRad)*50 + 150);
         }
@@ -126,7 +139,8 @@ void GLCanvas::Render() {
     SwapBuffers();
 }
 
-void GLCanvas::OnMouseClick(wxMouseEvent& event) {
+void GLCanvas::OnMouseClick(wxMouseEvent& event) 
+{
     wxPoint mousePos = event.GetPosition();
     if(mousePos.x >= 10 && mousePos.x <= 50 && 
        mousePos.y >= 10 && mousePos.y <= 50) {
@@ -135,19 +149,22 @@ void GLCanvas::OnMouseClick(wxMouseEvent& event) {
     event.Skip();
 }
 
-void GLCanvas::ToggleControlPanel() {
+void GLCanvas::ToggleControlPanel() 
+{
     if(m_controlPanel) {
         m_controlPanel->Show(!m_controlPanel->IsShown());
         GetParent()->Layout();
     }
 }
 
-void GLCanvas::OnSliderChange(wxCommandEvent& event) {
+void GLCanvas::OnSliderChange(wxCommandEvent& event) 
+{
     m_rotationAngle = dynamic_cast<wxSlider*>(event.GetEventObject())->GetValue();
     Refresh();
 }
 
-void GLCanvas::OnCheckboxToggle(wxCommandEvent& event) {
+void GLCanvas::OnCheckboxToggle(wxCommandEvent& event) 
+{
     m_showFeature = event.IsChecked();
     Refresh();
 }

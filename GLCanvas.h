@@ -13,9 +13,10 @@ public:
     virtual ~GLCanvas();
 
     void ToggleControlPanel();
-    wxPanel* GetControlPanel() const { return m_controlPanel; }
-
-//private:
+    void SetControlPanel(wxPanel* panel)  { m_controlPanel = panel;}
+    void OnSliderChange(wxCommandEvent& event);
+    void OnCheckboxToggle(wxCommandEvent& event);
+private:
     wxGLContext* m_context;
     wxPanel* m_controlPanel;
     GLuint m_buttonTexture;
@@ -28,8 +29,7 @@ public:
     void Render();
     GLuint LoadTexture(const wxString& path);
 
-    void OnSliderChange(wxCommandEvent& event);
-    void OnCheckboxToggle(wxCommandEvent& event);
+    
 
     wxDECLARE_EVENT_TABLE();
 };

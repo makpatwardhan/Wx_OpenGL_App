@@ -3,7 +3,8 @@
 
 wxIMPLEMENT_APP(MyApp);
 
-bool MyApp::OnInit() {
+bool MyApp::OnInit() 
+{
     wxGLAttributes dispAttrs;
     dispAttrs.PlatformDefaults().Defaults().EndList();
     
@@ -37,9 +38,8 @@ bool MyApp::OnInit() {
     
     mainSizer->Add(panel, 0, wxEXPAND);
     frame->SetSizer(mainSizer);
-    
-    canvas->m_controlPanel = panel;
-    
+    //wxPanel* mainPanel = canvas->GetControlPanel();
+    canvas->SetControlPanel(panel);
     frame->Show(true);
     return true;
 }
